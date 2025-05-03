@@ -31,7 +31,7 @@ export default function BookModal({ isOpen, onClose, onSubmit, initialData }: Pr
             cost: 0,
             file_pdf: '',
             type: [],
-            author_id: '',  // Thay bằng author_id trong form
+            author_id: '', 
         },
     });
 
@@ -60,11 +60,9 @@ export default function BookModal({ isOpen, onClose, onSubmit, initialData }: Pr
             });
         }
 
-        // Fetch authors from your backend (nếu có)
         const fetchAuthors = async () => {
             try {
-                // Giả sử bạn có API lấy danh sách tác giả
-                const authors = await getAuthors();  // Tạo hàm này trong service
+                const authors = await getAuthors(); 
                 setAuthors(authors);
             } catch (error) {
                 console.error("Error fetching authors:", error);
@@ -281,7 +279,7 @@ export default function BookModal({ isOpen, onClose, onSubmit, initialData }: Pr
                                         {pdfFile && (
                                             <p className="text-sm mt-2 text-gray-600">{pdfFile.name}</p>
                                         )}
-                                        {initialData?.file_pdf && (
+                                        {initialData?.file_pdf && !pdfFile && (
                                             <p className="text-sm mt-2 text-gray-600">{initialData?.book_name}</p>
                                         )}
                                     </div>
