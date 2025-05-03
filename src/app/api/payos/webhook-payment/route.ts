@@ -11,13 +11,15 @@ interface paymentInfo {
 }
 
 // Khởi tạo ứng dụng Firebase
-const firebaseApp =
-    getApps().length === 0
-        ? initializeApp({
-            credential: cert(serviceAccount as ServiceAccount),
-        }, 'book-app')
-        : getApp('book-app');
+let firebaseApp;
 
+try {
+    firebaseApp = getApp('book-app');
+} catch (error) {
+    firebaseApp = initializeApp({
+        credential: cert(serviceAccount as ServiceAccount),
+    }, 'book-app');
+}
 const db = getFirestore(firebaseApp);
 
 // Gọi PayOS để lấy thông tin giao dịch

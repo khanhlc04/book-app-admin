@@ -6,8 +6,8 @@ import { Client } from '@elastic/elasticsearch';
 import { getApp, getApps } from 'firebase/app';
 
 type BulkOperation =
-  | { index: { _index: string; _id: string } }
-  | { book_name: string; author: string };
+    | { index: { _index: string; _id: string } }
+    | { book_name: string; author: string };
 
 
 const elasticsearch = new Client({
@@ -18,12 +18,15 @@ const elasticsearch = new Client({
 });
 
 // Khởi tạo Firebase Admin nếu chưa có
-const firebaseApp =
-    getApps().length === 0
-        ? initializeApp({
-            credential: cert(serviceAccount as ServiceAccount),
-        }, 'book-app')
-        : getApp('book-app');
+let firebaseApp;
+
+try {
+    firebaseApp = getApp('book-app');
+} catch (error) {
+    firebaseApp = initializeApp({
+        credential: cert(serviceAccount as ServiceAccount),
+    }, 'book-app');
+}
 
 const db = getFirestore(firebaseApp);
 
