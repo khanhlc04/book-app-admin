@@ -4,23 +4,14 @@ import { initializeApp, cert, ServiceAccount } from 'firebase-admin/app';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import serviceAccount from '../../../../../serviceAccountKey.json'; // điều chỉnh đường dẫn nếu cần
 import { getApp } from 'firebase/app';
+import { firebaseAdminApp } from '@/lib/firebase-admin';
 
 interface paymentInfo {
     userId: string;
     bookId: string;
 }
 
-// Khởi tạo ứng dụng Firebase
-let firebaseApp;
-
-try {
-    firebaseApp = getApp('book-app');
-} catch {
-    firebaseApp = initializeApp({
-        credential: cert(serviceAccount as ServiceAccount),
-    }, 'book-app');
-}
-const db = getFirestore(firebaseApp);
+const db = getFirestore(firebaseAdminApp);
 
 // Gọi PayOS để lấy thông tin giao dịch
 async function getPaymentInfoFromPayOS(transactionId: string) {

@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
 import { initializeApp, cert, ServiceAccount } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
-import serviceAccount from '../../../../serviceAccountKey.json'; // Điều chỉnh alias nếu cần
+import serviceAccount from '../../../../serviceAccountKey.json'; 
 import { Client } from '@elastic/elasticsearch';
 import { getApp } from 'firebase/app';
+import { firebaseAdminApp } from '@/lib/firebase-admin';
 
 type BulkOperation =
     | { index: { _index: string; _id: string } }
@@ -17,18 +18,7 @@ const elasticsearch = new Client({
     }
 });
 
-// Khởi tạo Firebase Admin nếu chưa có
-let firebaseApp;
-
-try {
-    firebaseApp = getApp('book-app');
-} catch {
-    firebaseApp = initializeApp({
-        credential: cert(serviceAccount as ServiceAccount),
-    }, 'book-app');
-}
-
-const db = getFirestore(firebaseApp);
+const db = getFirestore(firebaseAdminApp);
 
 export async function POST() {
     try {
