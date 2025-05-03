@@ -289,7 +289,7 @@ export default function BookModal({ isOpen, onClose, onSubmit, initialData }: Pr
                                     <div className="space-y-2">
                                         <label className="block text-sm">Type</label>
                                         <div className="grid grid-cols-2 gap-2">
-                                            {['Book', 'Poems', 'Special for you', 'Stationary'].map(option => (
+                                            {['Book', 'Poems', 'Novels', 'Special for you', 'Stationary'].map(option => (
                                                 <label key={option} className="flex items-center space-x-2">
                                                     <input
                                                         type="checkbox"
