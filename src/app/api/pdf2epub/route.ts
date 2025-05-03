@@ -6,11 +6,6 @@ import { v4 as uuidv4 } from 'uuid';
 import https from 'https';
 import cloudinary from 'cloudinary';
 
-interface CloudConvertTask {
-    name: string;
-    status?: string;
-}
-
 // Cấu hình Cloudinary
 cloudinary.v2.config({
     cloud_name: 'dp6hjihhh',
@@ -98,7 +93,7 @@ export async function POST(req: Request) {
                         }
                     });
                 });
-            }).on('error', (err) => {
+            }).on('error', () => {
                 fs.unlink(outputPath, () => { });
                 resolve(NextResponse.json({ error: 'Không thể tải file sau khi chuyển đổi.' }, { status: 500 }));
             });

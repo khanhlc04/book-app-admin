@@ -6,17 +6,17 @@ import { FaPen, FaBook } from "react-icons/fa6";
 import MenuItem from "./MenuItem";
 
 const Sider = () => {
-    const [isLogin, setIsLogin] = useState<boolean>(false);
+    // const [isLogin, setIsLogin] = useState<boolean>(false);
 
-    useEffect(() => {
-        //     onAuthStateChanged(auth, (user) => {
-        //       if (user) {
-        setIsLogin(true);
-        //       } else {
-        //         setIsLogin(false);
-        //       }
-        //     });
-    }, [])
+    // useEffect(() => {
+    //         onAuthStateChanged(auth, (user) => {
+    //           if (user) {
+    //     setIsLogin(true);
+    //           } else {
+    //             setIsLogin(false);
+    //           }
+    //         });
+    // }, [])
 
     const menu = [
         {
