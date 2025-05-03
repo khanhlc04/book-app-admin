@@ -5,6 +5,11 @@ import serviceAccount from '../../../../serviceAccountKey.json'; // Điều ch�
 import { Client } from '@elastic/elasticsearch';
 import { getApp, getApps } from 'firebase/app';
 
+type BulkOperation =
+  | { index: { _index: string; _id: string } }
+  | { book_name: string; author: string };
+
+
 const elasticsearch = new Client({
     node: 'https://book-app-a10cb9.es.us-east-1.aws.elastic.cloud:443',
     auth: {
@@ -25,7 +30,7 @@ const db = getFirestore(firebaseApp);
 export async function POST() {
     try {
         const snapshot = await db.collection('book').get();
-        const bulkOps: any[] = [];
+        const bulkOps: BulkOperation[] = [];
 
         for (const doc of snapshot.docs) {
             const data = doc.data();

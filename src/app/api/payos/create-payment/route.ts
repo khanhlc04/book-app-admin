@@ -39,11 +39,19 @@ export async function POST(req: Request) {
         });
 
         return NextResponse.json(response.data);
-    } catch (error: any) {
-        console.error("🚨 Lỗi khi tạo link thanh toán: ", error?.response?.data || error.message);
-        return NextResponse.json({
-            error: "Không tạo được link thanh toán",
-            details: error?.response?.data || error.message
-        }, { status: 500 });
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            console.error("Lỗi khi tạo link thanh toán: ", error.message);
+            return NextResponse.json({
+                error: "Không tạo được link thanh toán",
+                details: error.message
+            }, { status: 500 });
+        } else {
+            console.error("Lỗi không xác định:", error);
+            return NextResponse.json({
+                error: "Lỗi không xác định khi tạo link thanh toán"
+            }, { status: 500 });
+        }
     }
+    
 }

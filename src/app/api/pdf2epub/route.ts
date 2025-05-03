@@ -6,6 +6,11 @@ import { v4 as uuidv4 } from 'uuid';
 import https from 'https';
 import cloudinary from 'cloudinary';
 
+interface CloudConvertTask {
+    name: string;
+    status?: string;
+}
+
 // Cấu hình Cloudinary
 cloudinary.v2.config({
     cloud_name: 'dp6hjihhh',
@@ -52,7 +57,7 @@ export async function POST(req: Request) {
         });
 
         job = await cloudConvert.jobs.wait(job.id);
-        const exportTask = job.tasks.find((task: any) => task.name === 'export-my-file');
+        const exportTask = job.tasks.find((task: { name?: string }) => task.name === 'export-my-file');
 
         if (!exportTask || !exportTask.result?.files?.length) {
             return NextResponse.json({ error: 'Không thể xuất file sau khi chuyển đổi.' }, { status: 500 });
@@ -67,7 +72,7 @@ export async function POST(req: Request) {
             if (!exportUrl) {
                 return NextResponse.json({ error: 'Không thể xuất file sau khi chuyển đổi.' }, { status: 500 });
             }
-            
+
             https.get(exportUrl, (response) => {
                 response.pipe(file);
                 file.on('finish', async () => {
@@ -99,8 +104,14 @@ export async function POST(req: Request) {
             });
         });
 
-    } catch (error: any) {
-        console.error('Lỗi:', error.message);
-        return NextResponse.json({ error: 'Chuyển đổi thất bại.' }, { status: 500 });
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            console.error('Lỗi:', error.message);
+            return NextResponse.json({ error: 'Chuyển đổi thất bại.' }, { status: 500 });
+        } else {
+            console.error('Lỗi không xác định:', error);
+            return NextResponse.json({ error: 'Chuyển đổi thất bại.' }, { status: 500 });
+        }
     }
+
 }

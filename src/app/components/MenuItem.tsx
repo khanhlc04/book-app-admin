@@ -2,7 +2,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation";
 
 type MenuItem = {
-    icon: any,
+    icon: React.ReactNode,
     title: string,
     link: string
 }

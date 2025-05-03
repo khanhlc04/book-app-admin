@@ -5,6 +5,11 @@ import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import serviceAccount from '../../../../../serviceAccountKey.json'; // điều chỉnh đường dẫn nếu cần
 import { getApp, getApps } from 'firebase/app';
 
+interface paymentInfo {
+    userId: string;
+    bookId: string;
+}
+
 // Khởi tạo ứng dụng Firebase
 const firebaseApp =
     getApps().length === 0
@@ -34,10 +39,7 @@ async function getPaymentInfoFromPayOS(transactionId: string) {
 }
 
 // Ghi sách vào kho người dùng nếu thanh toán thành công
-async function createUserBookRecord(paymentInfo: {
-    userId: string;
-    bookId: string;
-}) {
+async function createUserBookRecord(paymentInfo: paymentInfo) {
     const { userId, bookId } = paymentInfo;
     const userBooksRef = db.collection('user_books').doc(userId);
     const userBookDoc = await userBooksRef.get();
@@ -68,7 +70,7 @@ async function updateTransactionStatus(transactionId: string, status: string) {
         await doc.ref.update({ status });
 
         if (status === 'PAID') {
-            await createUserBookRecord(docData as any);
+            await createUserBookRecord(docData as paymentInfo);
         }
     });
 }
