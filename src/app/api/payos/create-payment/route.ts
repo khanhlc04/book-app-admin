@@ -15,8 +15,8 @@ export async function POST(req: Request) {
         }
 
         const orderCode = Math.floor(Math.random() * 1000000);
-        const returnUrl = "https://payos-backend.vercel.app/api/payos/success";
-        const cancelUrl = "https://payos-backend.vercel.app/api/payos/cancel";
+        const returnUrl = "https://payos-backend.vercel.app/success";
+        const cancelUrl = "https://payos-backend.vercel.app/cancel";
 
         const rawData = `amount=${amount}&cancelUrl=${cancelUrl}&description=${description}&orderCode=${orderCode}&returnUrl=${returnUrl}`;
         const signature = crypto.createHmac("sha256", CHECKSUM_KEY).update(rawData).digest("hex");
