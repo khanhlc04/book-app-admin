@@ -1,9 +1,6 @@
 import { NextResponse } from 'next/server';
-import { initializeApp, cert, ServiceAccount } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
-import serviceAccount from '../../../../serviceAccountKey.json'; 
 import { Client } from '@elastic/elasticsearch';
-import { getApp } from 'firebase/app';
 import { firebaseAdminApp } from '@/lib/firebase-admin';
 
 type BulkOperation =

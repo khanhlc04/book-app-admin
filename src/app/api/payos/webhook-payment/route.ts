@@ -1,9 +1,6 @@
 import { NextResponse } from 'next/server';
 import axios from 'axios';
-import { initializeApp, cert, ServiceAccount } from 'firebase-admin/app';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
-import serviceAccount from '../../../../../serviceAccountKey.json'; // điều chỉnh đường dẫn nếu cần
-import { getApp } from 'firebase/app';
 import { firebaseAdminApp } from '@/lib/firebase-admin';
 
 interface paymentInfo {
