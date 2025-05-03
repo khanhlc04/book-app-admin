@@ -132,16 +132,16 @@ export default function BookModal({ isOpen, onClose, onSubmit, initialData }: Pr
                 ...data,
                 poster: posterUrl,
                 file_pdf: pdfUrl,
-                file_epub: epubUrl // Thêm trường mới nếu cần
+                file_epub: epubUrl 
             };
 
             if (data.id) {
                 await updateBook(data.id, payload);
-                await fetch('http://localhost:3000/api/sync-elastic', { method: 'POST' });
+                await fetch('https://book-app-admin.vercel.app/api/sync-elastic', { method: 'POST' });
             } else {
                 console.log(payload)
                 await addBook(payload);
-                await fetch('http://localhost:3000/api/sync-elastic', { method: 'POST' });
+                await fetch('https://book-app-admin.vercel.app/api/sync-elastic', { method: 'POST' });
             }
 
             onSubmit(payload);
