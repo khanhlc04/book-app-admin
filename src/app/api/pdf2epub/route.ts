@@ -76,7 +76,7 @@ export async function POST(req: Request): Promise<Response> {
         });
 
         job = await cloudConvert.jobs.wait(job.id);
-        const exportTask = job.tasks.find((task: any) => task.name === 'export-my-file');
+        const exportTask = job.tasks.find((task: { name?: string }) => task.name === 'export-my-file');
 
         if (!exportTask || !exportTask.result?.files?.length) {
             return NextResponse.json({ error: 'Không thể xuất file.' }, { status: 500 });
