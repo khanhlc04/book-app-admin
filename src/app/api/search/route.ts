@@ -1,4 +1,3 @@
-// app/api/search/route.ts
 import { NextRequest } from 'next/server';
 import { Client } from '@elastic/elasticsearch';
 
@@ -20,9 +19,11 @@ export async function GET(request: NextRequest) {
             });
         }
 
+        
         const result = await client.search({
             index: 'search-b3fu',
             body: {
+                // @ts-ignore
                 query: {
                     bool: {
                         should: [
@@ -64,13 +65,6 @@ export async function GET(request: NextRequest) {
                 }
             }
         });
-
-        if (result.hits.total?.value === 0) {
-            return new Response(JSON.stringify({ message: 'No results found' }), {
-                status: 404,
-                headers: { 'Content-Type': 'application/json' }
-            });
-        }
 
         return new Response(JSON.stringify(result.hits.hits), {
             status: 200,
