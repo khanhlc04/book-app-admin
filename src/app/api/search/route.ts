@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
         const result = await client.search({
             index: 'search-b3fu',
             body: {
-                // @ts-ignore
+                // @ts-expect-error
                 query: {
                     bool: {
                         should: [
