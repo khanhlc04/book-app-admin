@@ -3,7 +3,7 @@ import { initializeApp, cert, ServiceAccount } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 import serviceAccount from '../../../../serviceAccountKey.json'; // Điều chỉnh alias nếu cần
 import { Client } from '@elastic/elasticsearch';
-import { getApp, getApps } from 'firebase/app';
+import { getApp } from 'firebase/app';
 
 type BulkOperation =
     | { index: { _index: string; _id: string } }
@@ -22,7 +22,7 @@ let firebaseApp;
 
 try {
     firebaseApp = getApp('book-app');
-} catch (error) {
+} catch {
     firebaseApp = initializeApp({
         credential: cert(serviceAccount as ServiceAccount),
     }, 'book-app');

@@ -3,7 +3,7 @@ import axios from 'axios';
 import { initializeApp, cert, ServiceAccount } from 'firebase-admin/app';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import serviceAccount from '../../../../../serviceAccountKey.json'; // điều chỉnh đường dẫn nếu cần
-import { getApp, getApps } from 'firebase/app';
+import { getApp } from 'firebase/app';
 
 interface paymentInfo {
     userId: string;
@@ -15,7 +15,7 @@ let firebaseApp;
 
 try {
     firebaseApp = getApp('book-app');
-} catch (error) {
+} catch {
     firebaseApp = initializeApp({
         credential: cert(serviceAccount as ServiceAccount),
     }, 'book-app');
