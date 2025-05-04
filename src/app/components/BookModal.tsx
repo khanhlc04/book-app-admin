@@ -307,7 +307,7 @@ export default function BookModal({ isOpen, onClose, onSubmit, initialData }: Pr
                                         <button 
                                         type="button" 
                                         onClick={() => {
-                                            reset;
+                                            reset();
                                             setPdfFile(null);
                                             setPosterFile(null);
                                             onClose();
