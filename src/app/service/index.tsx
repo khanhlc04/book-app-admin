@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc, getCountFromServer, getDocs, orderBy, query, updateDoc } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getCountFromServer, getDocs, orderBy, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { Author, Book } from "../constants/interface";
 
@@ -172,3 +172,22 @@ export const uploadToCloudinary = async (file: File, fileType: 'image' | 'raw') 
 
     return data.secure_url;
 };
+
+export const getBooksByAuthorId = async (authorId: string) => {
+    try {
+        const booksRef = collection(db, "book");
+        const q = query(booksRef, where("author_id", "==", authorId));
+
+        const querySnapshot = await getDocs(q);
+
+        const books = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }) as Book);
+
+        return books;
+    } catch (error) {
+        console.error("Lỗi khi lấy sách theo author_id:", error);
+        return [];
+    }
+}

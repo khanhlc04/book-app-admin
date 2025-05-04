@@ -134,11 +134,22 @@ export default function BookModal({ isOpen, onClose, onSubmit, initialData }: Pr
             };
 
             if (data.id) {
-                await updateBook(data.id, payload);
-                await fetch('/api/sync-elastic', { method: 'POST' });
+                await updateBook(data.id, payload);  
             } else {
-                await addBook(payload);
-                await fetch('/api/sync-elastic', { method: 'POST' });
+                await addBook(payload);  
+            }
+
+            // Đồng bộ sách với Elasticsearch sau khi thêm hoặc cập nhật
+            const syncRes = await fetch('/api/sync-elastic', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ operation: data.id ? 'update' : 'create' })
+            });
+
+            if (!syncRes.ok) {
+                throw new Error('Lỗi đồng bộ với Elasticsearch');
             }
 
             setPosterFile(null);
@@ -304,15 +315,15 @@ export default function BookModal({ isOpen, onClose, onSubmit, initialData }: Pr
                                     </div>
 
                                     <div className="mt-6 flex justify-end gap-2">
-                                        <button 
-                                        type="button" 
-                                        onClick={() => {
-                                            reset();
-                                            setPdfFile(null);
-                                            setPosterFile(null);
-                                            onClose();
-                                        }} 
-                                        className="px-4 py-2 border rounded text-gray-600">
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                reset();
+                                                setPdfFile(null);
+                                                setPosterFile(null);
+                                                onClose();
+                                            }}
+                                            className="px-4 py-2 border rounded text-gray-600">
                                             Cancel
                                         </button>
                                         <button

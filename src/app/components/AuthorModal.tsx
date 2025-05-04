@@ -1,10 +1,8 @@
-'use client';
-
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Author } from '../constants/interface';
-import { addAuthor, updateAuthor, uploadToCloudinary } from '../service';
+import { addAuthor, getBooksByAuthorId, updateAuthor, uploadToCloudinary } from '../service';
 
 type Props = {
     isOpen: boolean;
@@ -74,7 +72,31 @@ export default function AuthorModal({ isOpen, onClose, onSubmit, initialData }: 
                 image: imageUrl,
             };
 
+            let previousAuthorName = initialData?.author_name;
+
+            console.log(previousAuthorName)
+
             if (data.id) {
+                // Nếu tên tác giả thay đổi, gọi API tìm kiếm sách trong Elasticsearch
+                if (previousAuthorName !== data.author_name) {
+                    const books = await getBooksByAuthorId(data.id);
+
+                    for (const book of books) {
+                        await fetch('/api/sync-elastic', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                operation: 'update',
+                                docId: book.id,
+                                book_name: book.book_name,     
+                                author: data.author_name       
+                            }),
+                        });
+                    }
+                }
+
                 await updateAuthor(data.id, payload);
             } else {
                 await addAuthor(payload);
