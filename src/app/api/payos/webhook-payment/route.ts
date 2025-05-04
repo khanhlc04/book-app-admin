@@ -55,15 +55,18 @@ async function updateTransactionStatus(transactionId: string, status: string) {
 
     if (snapshot.empty) return;
 
-    snapshot.forEach(async (doc) => {
-        const docData = doc.data();
-        await doc.ref.update({ status });
+    await Promise.all(
+        snapshot.docs.map(async (doc) => {
+            const docData = doc.data();
+            await doc.ref.update({ status });
 
-        if (status === 'PAID') {
-            await createUserBookRecord(docData as paymentInfo);
-        }
-    });
+            if (status === 'PAID') {
+                await createUserBookRecord(docData as paymentInfo);
+            }
+        })
+    );
 }
+
 
 // Webhook Handler
 export async function POST(req: Request) {
