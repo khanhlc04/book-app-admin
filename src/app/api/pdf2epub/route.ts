@@ -14,8 +14,7 @@ cloudinary.v2.config({
 });
 
 // Tạo CloudConvert instance
-const cloudConvert = new CloudConvert('eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiY2QxMjdmMGRkMzdlZDExOTJjOTAzZmE1NDBiMzUzNDMyNzBmYTgxYjFmZGE4NTZlMzE1NzlkZTA1YTA3OTcwYmI4MTU2YTNlMDM1ZjNlM2UiLCJpYXQiOjE3NDU5Mjk5MzkuMzA0MDI5LCJuYmYiOjE3NDU5Mjk5MzkuMzA0MDMsImV4cCI6NDkwMTYwMzUzOS4yOTgxOTEsInN1YiI6IjY3MTQyMTI1Iiwic2NvcGVzIjpbInVzZXIucmVhZCIsInVzZXIud3JpdGUiLCJ0YXNrLndyaXRlIiwidGFzay5yZWFkIiwid2ViaG9vay5yZWFkIiwid2ViaG9vay53cml0ZSIsInByZXNldC5yZWFkIiwicHJlc2V0LndyaXRlIl19.gqJAbC1The_dl0_k9u36E_ofviq9wxTeHYPEsUTaPzOcvvAmdIfEe9ibAc0iWqydlVerCN8o8J527vEYZZThvFtFbaS0ga5o8-8NOKQSalXhsFVNtu_ClUlOgKS_ERq1nHZvdUYeVNmmdolgo-R03e4vSmp2rCmbDT3tAIWljH_aaDeT_L-cP95iT5ddFToeAsOXOittlG1qjvMlAcCWJP6UwveELulO5l8E2sWs1hxAwXbixPqvEoliCyQMMNy1lWq75OK_FH-K53V0Cf_Q6vt_5WOLIBADdfTBG5l0qJVyB9H3mOTfRzN2RJxOgqg-zoNnZRgDjrRAI2iNbmL91ENehRod71IIbfcOhnUzhShvyvYp-tCUoqWA1xrSXJsMLfSWLHT1tNkUfnRgPO7-GpiltxjJO3PBlt7dSPM0H4p3fmSO3Vqqrz243MYhgECHcg8uA9hvUJXFeA1P_BVBc5zrtqhBh32TTAUXX3QMOvfvHMdwNxWLhDkVt-bL48P9UJ-X71QyS02J3bmjQsHCpXgCwz9_9kW74gCoajSM6n7ftX9Nt5we7HyDX2rfDBJofhQ3YvZ-wuL4fPodpLYpFd_tzKJ7ulBy1x2fSeZuGzNLuyCXYOWjamj4jKHI-m6d-QiGUOMSRvmMZ0W4BwyhzcxiShIvSOnORqqGIRJEj-c');
-
+const cloudConvert = new CloudConvert('eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNDcyN2FkNjUzNmY2YmQwYWE4MDQ2OTNmMzczNjNiZjI0OWM4OWYxOWY2ZDBjMGJiOWU5MDdhYTE4NTMzMzNjMDQ0OTMxYTQ0ZmJjZjVlMzYiLCJpYXQiOjE3NDYzNDgzMjAuNzE4MDI1LCJuYmYiOjE3NDYzNDgzMjAuNzE4MDI2LCJleHAiOjQ5MDIwMjE5MjAuNzExNDkxLCJzdWIiOiI3MTgyMTUwNiIsInNjb3BlcyI6WyJ1c2VyLnJlYWQiLCJ1c2VyLndyaXRlIiwidGFzay5yZWFkIiwidGFzay53cml0ZSIsIndlYmhvb2sucmVhZCIsIndlYmhvb2sud3JpdGUiLCJwcmVzZXQucmVhZCIsInByZXNldC53cml0ZSJdfQ.n_TwEOhKI4cUSaNexC-hhQSJYtCXw_Qlf-2UazsF6_GEJX7_IoTQahmEwNXcDHUWW8VeXkPfopGY42-kdj6l8HHsvKBoI80FDcrlFRzDcOdo2c7QqPD6ChriZLBg6rdiqn9kzZFgVXuHk_ROoyToRhtncbWiJ9uKNDrDwx03EnIbg7MPUi3cYD59sybFncsfhStTmgX5V631kBOH0dNiBdy6AxPeH--8Yhj9mx7sTfisM9L4OMEYFHM0cacSP9nurPqTtP8FW6fkEm6_gMV5vg7XqhkUOJ7TUWkkaRX9R6rlm5ub5PieMG7CP7JFc-RT9dTdDLOOtKZugCtsjSuxWkIZTqsDWdPdocv1IqUbvYya41KbSoV9tmEc-5BVaH-5PHkDvxLutdW5JCSWZjrqGXZR8ekg0zCoLBmTgj3eCzfjfgnozrViYx6R6wFnB5OVjEX9RgL3OkwZ2fxuNYzdZ5kOPFTvYFQ-IFcjfzRnyQqoz02zyel7mrnjRxcq9E3XU_SunYKJjanMclmzrRCbPPds7WdrTFs7aqmvY3WfGUSNCB3mfhWsXJWoOamkeVVsRsU7bg_fHWTNqKnvGO1V0zXywl_ePfly8O9L7rM4LJqIgfEdiuP1Ao6qLV0qK6tdT7u-WXaDgrVlJzB4Nli7wbLJ9Z3lonAmVOlXBXrVt0Q')
 async function downloadFile(url: string, outputPath: string): Promise<void> {
     return new Promise((resolve, reject) => {
         const file = fs.createWriteStream(outputPath);
@@ -33,7 +32,7 @@ async function downloadFile(url: string, outputPath: string): Promise<void> {
                 });
             });
         }).on('error', (err) => {
-            fs.unlink(outputPath, () => { });  
+            fs.unlink(outputPath, () => { });
             reject(err);
         });
     });
@@ -50,7 +49,7 @@ export async function POST(req: Request): Promise<Response> {
 
     try {
         const tempId = uuidv4();
-        const tempDir = path.join(process.cwd(), 'temp');
+        const tempDir = '/tmp';
         const outputPath = path.join(tempDir, `${tempId}.epub`);
 
         if (!fs.existsSync(tempDir)) {
