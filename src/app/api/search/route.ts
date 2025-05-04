@@ -43,10 +43,10 @@ export async function GET(request: NextRequest) {
                                 }
                             },
                             {
-                                wildcard: {
+                                match_phrase_prefix: {
                                     author: {
-                                        value: query + '*',
-                                        boost: 0.5
+                                        query: query,
+                                        boost: 1
                                     }
                                 }
                             }
