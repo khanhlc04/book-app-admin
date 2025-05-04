@@ -72,9 +72,7 @@ export default function AuthorModal({ isOpen, onClose, onSubmit, initialData }: 
                 image: imageUrl,
             };
 
-            let previousAuthorName = initialData?.author_name;
-
-            console.log(previousAuthorName)
+            const previousAuthorName = initialData?.author_name;
 
             if (data.id) {
                 // Nếu tên tác giả thay đổi, gọi API tìm kiếm sách trong Elasticsearch
