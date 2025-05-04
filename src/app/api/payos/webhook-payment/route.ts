@@ -28,6 +28,23 @@ async function getPaymentInfoFromPayOS(transactionId: string) {
     return response.data.data;
 }
 
+async function removeFromCart(userId: string, bookId: string) {
+    try {
+        const cartRef = db.collection('cart').doc(userId);
+        const cartDoc = await cartRef.get();
+
+        if (cartDoc.exists) {
+            await cartRef.update({
+                bookIds: FieldValue.arrayRemove(bookId)
+            });
+        } else {
+            console.log('No books found in cart for this user');
+        }
+    } catch (error) {
+        console.error('Error removing book from cart:', error);
+    }
+}
+
 // Ghi sách vào kho người dùng nếu thanh toán thành công
 async function createUserBookRecord(paymentInfo: paymentInfo) {
     const { userId, bookId } = paymentInfo;
@@ -44,6 +61,8 @@ async function createUserBookRecord(paymentInfo: paymentInfo) {
     } else {
         await userBooksRef.set({ books: [bookId] });
     }
+
+    await removeFromCart(userId, bookId);
 }
 
 // Cập nhật trạng thái giao dịch
@@ -62,6 +81,7 @@ async function updateTransactionStatus(transactionId: string, status: string) {
 
             if (status === 'PAID') {
                 await createUserBookRecord(docData as paymentInfo);
+
             }
         })
     );
