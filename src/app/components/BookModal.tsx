@@ -109,8 +109,8 @@ export default function BookModal({ isOpen, onClose, onSubmit, initialData }: Pr
             if (pdfFile) {
                 pdfUrl = await uploadToCloudinary(pdfFile, 'raw');
 
-                // 👉 Gọi API pdf2epub sau khi upload xong pdf
-                const epubRes = await fetch('/api/pdf2epub', {
+                // Gọi API pdf2epub sau khi upload xong pdf
+                const epubRes = await fetch('https://book-app-admin.vercel.app/api/pdf2epub', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -137,7 +137,6 @@ export default function BookModal({ isOpen, onClose, onSubmit, initialData }: Pr
                 await updateBook(data.id, payload);
                 await fetch('https://book-app-admin.vercel.app/api/sync-elastic', { method: 'POST' });
             } else {
-                console.log(payload)
                 await addBook(payload);
                 await fetch('https://book-app-admin.vercel.app/api/sync-elastic', { method: 'POST' });
             }
