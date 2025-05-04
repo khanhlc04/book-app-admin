@@ -9,7 +9,7 @@ import { addAuthor, updateAuthor, uploadToCloudinary } from '../service';
 type Props = {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (data: Author) => void;
+    onSubmit: () => void;
     initialData?: Author | null;
 };
 
@@ -80,7 +80,8 @@ export default function AuthorModal({ isOpen, onClose, onSubmit, initialData }: 
                 await addAuthor(payload);
             }
 
-            onSubmit(payload);
+            onSubmit();
+
             onClose();
         } catch (error) {
             console.error(error);

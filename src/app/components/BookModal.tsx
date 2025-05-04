@@ -3,14 +3,14 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Book, Author } from '../constants/interface';  
+import { Book, Author } from '../constants/interface';
 import { addBook, getAuthors, updateBook, uploadToCloudinary } from '../service';
-import AuthorModal from './AuthorModal';  
+import AuthorModal from './AuthorModal';
 
 type Props = {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (data: Book) => void;
+    onSubmit: () => void;
     initialData?: Book | null;
 };
 
@@ -31,7 +31,7 @@ export default function BookModal({ isOpen, onClose, onSubmit, initialData }: Pr
             cost: 0,
             file_pdf: '',
             type: [],
-            author_id: '', 
+            author_id: '',
         },
     });
 
@@ -62,7 +62,7 @@ export default function BookModal({ isOpen, onClose, onSubmit, initialData }: Pr
 
         const fetchAuthors = async () => {
             try {
-                const authors = await getAuthors(); 
+                const authors = await getAuthors();
                 setAuthors(authors);
             } catch (error) {
                 console.error("Error fetching authors:", error);
@@ -130,7 +130,7 @@ export default function BookModal({ isOpen, onClose, onSubmit, initialData }: Pr
                 ...data,
                 poster: posterUrl,
                 file_pdf: pdfUrl,
-                file_epub: epubUrl 
+                file_epub: epubUrl
             };
 
             if (data.id) {
@@ -141,9 +141,11 @@ export default function BookModal({ isOpen, onClose, onSubmit, initialData }: Pr
                 await fetch('/api/sync-elastic', { method: 'POST' });
             }
 
-            onSubmit(payload);
-
+            setPosterFile(null);
+            setPdfFile(null);
             reset();
+
+            onSubmit();
 
             onClose();
         } catch (error) {
@@ -286,7 +288,7 @@ export default function BookModal({ isOpen, onClose, onSubmit, initialData }: Pr
                                     <div className="space-y-2">
                                         <label className="block text-sm">Type</label>
                                         <div className="grid grid-cols-2 gap-2">
-                                            {['Book', 'Poems', 'Novels', 'Special for you', 'Stationary'].map(option => (
+                                            {['Novels', 'Self Love', 'Science', 'Romantic'].map(option => (
                                                 <label key={option} className="flex items-center space-x-2">
                                                     <input
                                                         type="checkbox"
@@ -302,7 +304,15 @@ export default function BookModal({ isOpen, onClose, onSubmit, initialData }: Pr
                                     </div>
 
                                     <div className="mt-6 flex justify-end gap-2">
-                                        <button type="button" onClick={onClose} className="px-4 py-2 border rounded text-gray-600">
+                                        <button 
+                                        type="button" 
+                                        onClick={() => {
+                                            reset;
+                                            setPdfFile(null);
+                                            setPosterFile(null);
+                                            onClose();
+                                        }} 
+                                        className="px-4 py-2 border rounded text-gray-600">
                                             Cancel
                                         </button>
                                         <button
