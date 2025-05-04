@@ -19,7 +19,6 @@ export async function GET(request: NextRequest) {
             });
         }
 
-        
         const result = await client.search({
             index: 'search-b3fu',
             body: {
@@ -40,15 +39,6 @@ export async function GET(request: NextRequest) {
                                     book_name: {
                                         query: query,
                                         boost: 3
-                                    }
-                                }
-                            },
-                            {
-                                match: {
-                                    book_name: {
-                                        query: query,
-                                        fuzziness: 'AUTO',
-                                        boost: 1
                                     }
                                 }
                             },
