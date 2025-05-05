@@ -61,10 +61,11 @@ async function createUserBookRecord(paymentInfo: paymentInfo) {
         }
     } else {
         await userBooksRef.set({ books: [bookId] });
-        await updateBookBuyed(bookId);
     }
 
     await removeFromCart(userId, bookId);
+
+    await updateBookBuyed(bookId);
 }
 
 // Cập nhật trạng thái giao dịch
