@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc, getCountFromServer, getDocs, orderBy, query, updateDoc, where } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getCountFromServer, getDocs, increment, orderBy, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { Author, Book } from "../constants/interface";
 
@@ -111,6 +111,7 @@ export const addBook = async (bookData: Omit<Book, 'id'>) => {
             file_epub: bookData.file_epub,
             type: bookData.type,
             author_id: bookData.author_id,
+            buyed: 0,
             created_at: new Date(),  // Thêm trường created_at để ghi nhận thời gian tạo
         });
 
@@ -191,3 +192,15 @@ export const getBooksByAuthorId = async (authorId: string) => {
         return [];
     }
 }
+
+export const updateBookBuyed = async (bookId: string) => {
+    try {
+      const bookRef = doc(db, 'book', bookId);
+      await updateDoc(bookRef, {
+        buyed: increment(1),
+      });
+      console.log('Buyed count updated successfully.');
+    } catch (error) {
+      console.error('Error updating buyed count:', error);
+    }
+  };

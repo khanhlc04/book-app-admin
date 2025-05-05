@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import axios from 'axios';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import { firebaseAdminApp } from '@/lib/firebase-admin';
+import { updateBookBuyed } from '@/app/service';
 
 interface paymentInfo {
     userId: string;
@@ -60,6 +61,7 @@ async function createUserBookRecord(paymentInfo: paymentInfo) {
         }
     } else {
         await userBooksRef.set({ books: [bookId] });
+        await updateBookBuyed(bookId);
     }
 
     await removeFromCart(userId, bookId);

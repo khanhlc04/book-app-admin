@@ -128,6 +128,7 @@ export default function BookModal({ isOpen, onClose, onSubmit, initialData }: Pr
 
             const payload = {
                 ...data,
+                cost: Number(data.cost),
                 poster: posterUrl,
                 file_pdf: pdfUrl,
                 file_epub: epubUrl
