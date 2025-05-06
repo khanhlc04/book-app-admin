@@ -123,20 +123,20 @@ export default function BookModal({ isOpen, onClose, onSubmit, initialData }: Pr
             if (pdfFile) {
                 pdfUrl = await uploadToCloudinary(pdfFile, 'raw');
 
-                // const epubRes = await fetch('/api/pdf2epub', {
-                //     method: 'POST',
-                //     headers: {
-                //         'Content-Type': 'application/json'
-                //     },
-                //     body: JSON.stringify({ pdfUrl })
-                // });
+                const epubRes = await fetch('/api/pdf2epub', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ pdfUrl })
+                });
 
-                // if (!epubRes.ok) {
-                //     throw new Error('Chuyển đổi EPUB thất bại');
-                // }
+                if (!epubRes.ok) {
+                    throw new Error('Chuyển đổi EPUB thất bại');
+                }
 
-                // const epubData = await epubRes.json();
-                // epubUrl = epubData.cloudinary_url; // Lấy link epub từ Cloudinary
+                const epubData = await epubRes.json();
+                epubUrl = epubData.cloudinary_url; 
             }
 
             const payload = {
@@ -153,17 +153,17 @@ export default function BookModal({ isOpen, onClose, onSubmit, initialData }: Pr
                 await addBook(payload);  
             }
 
-            // const syncRes = await fetch('/api/sync-elastic', {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: JSON.stringify({ operation: data.id ? 'update' : 'create' })
-            // });
+            const syncRes = await fetch('/api/sync-elastic', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ operation: data.id ? 'update' : 'create' })
+            });
 
-            // if (!syncRes.ok) {
-            //     throw new Error('Lỗi đồng bộ với Elasticsearch');
-            // }
+            if (!syncRes.ok) {
+                throw new Error('Lỗi đồng bộ với Elasticsearch');
+            }
 
             setPosterFile(null);
 
