@@ -3,9 +3,10 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Book, Author } from '../constants/interface';
-import { addBook, getAuthors, updateBook, uploadToCloudinary } from '../service';
+import { Book, Author, Vendor } from '../constants/interface';
+import { addBook, getAuthors, getVendors, updateBook, uploadToCloudinary } from '../service';
 import AuthorModal from './AuthorModal';
+import VendorModal from './VendorModal';
 
 type Props = {
     isOpen: boolean;
@@ -32,14 +33,23 @@ export default function BookModal({ isOpen, onClose, onSubmit, initialData }: Pr
             file_pdf: '',
             type: [],
             author_id: '',
+            vendor_id: ''
         },
     });
 
     const [loading, setLoading] = useState(false);
+
     const [posterFile, setPosterFile] = useState<File | null>(null);
+
     const [pdfFile, setPdfFile] = useState<File | null>(null);
-    const [authors, setAuthors] = useState<Author[]>([]);  // Danh sách tác giả
-    const [isAuthorModalOpen, setAuthorModalOpen] = useState(false);  // Điều khiển modal Add Author
+
+    const [authors, setAuthors] = useState<Author[]>([]); 
+    
+    const [vendors, setVendors] = useState<Vendor[]>([]);
+
+    const [isAuthorModalOpen, setAuthorModalOpen] = useState(false);  
+
+    const [isVendorModalOpen, setVendorModalOpen] = useState(false); 
 
     const poster = watch('poster');
     const type = watch('type');
@@ -57,6 +67,7 @@ export default function BookModal({ isOpen, onClose, onSubmit, initialData }: Pr
                 file_pdf: '',
                 type: [],
                 author_id: '',
+                vendor_id: '',
             });
         }
 
@@ -64,6 +75,9 @@ export default function BookModal({ isOpen, onClose, onSubmit, initialData }: Pr
             try {
                 const authors = await getAuthors();
                 setAuthors(authors);
+
+                const vendors = await getVendors();
+                setVendors(vendors);
             } catch (error) {
                 console.error("Error fetching authors:", error);
             }
@@ -109,21 +123,20 @@ export default function BookModal({ isOpen, onClose, onSubmit, initialData }: Pr
             if (pdfFile) {
                 pdfUrl = await uploadToCloudinary(pdfFile, 'raw');
 
-                // Gọi API pdf2epub sau khi upload xong pdf
-                const epubRes = await fetch('/api/pdf2epub', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ pdfUrl })
-                });
+                // const epubRes = await fetch('/api/pdf2epub', {
+                //     method: 'POST',
+                //     headers: {
+                //         'Content-Type': 'application/json'
+                //     },
+                //     body: JSON.stringify({ pdfUrl })
+                // });
 
-                if (!epubRes.ok) {
-                    throw new Error('Chuyển đổi EPUB thất bại');
-                }
+                // if (!epubRes.ok) {
+                //     throw new Error('Chuyển đổi EPUB thất bại');
+                // }
 
-                const epubData = await epubRes.json();
-                epubUrl = epubData.cloudinary_url; // Lấy link epub từ Cloudinary
+                // const epubData = await epubRes.json();
+                // epubUrl = epubData.cloudinary_url; // Lấy link epub từ Cloudinary
             }
 
             const payload = {
@@ -140,21 +153,22 @@ export default function BookModal({ isOpen, onClose, onSubmit, initialData }: Pr
                 await addBook(payload);  
             }
 
-            // Đồng bộ sách với Elasticsearch sau khi thêm hoặc cập nhật
-            const syncRes = await fetch('/api/sync-elastic', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ operation: data.id ? 'update' : 'create' })
-            });
+            // const syncRes = await fetch('/api/sync-elastic', {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     },
+            //     body: JSON.stringify({ operation: data.id ? 'update' : 'create' })
+            // });
 
-            if (!syncRes.ok) {
-                throw new Error('Lỗi đồng bộ với Elasticsearch');
-            }
+            // if (!syncRes.ok) {
+            //     throw new Error('Lỗi đồng bộ với Elasticsearch');
+            // }
 
             setPosterFile(null);
+
             setPdfFile(null);
+            
             reset();
 
             onSubmit();
@@ -245,10 +259,37 @@ export default function BookModal({ isOpen, onClose, onSubmit, initialData }: Pr
                                         </button>
                                     </div>
 
-                                    {/* Modal Add Author */}
                                     <AuthorModal
                                         isOpen={isAuthorModalOpen}
                                         onClose={() => setAuthorModalOpen(false)}
+                                        onSubmit={() => { console.log('hi') }}
+                                    />
+
+                                    <div className="space-y-2">
+                                        <label className="block text-sm">Vendor</label>
+                                        <select
+                                            {...register('vendor_id', { required: true })}
+                                            className="w-full border rounded p-2"
+                                        >
+                                            <option value="">Select Vendor</option>
+                                            {vendors.map((vendor) => (
+                                                <option key={vendor.id} value={vendor.id}>
+                                                    {vendor.vendor_name}
+                                                </option>
+                                            ))}
+                                        </select>
+                                        <button
+                                            type="button"
+                                            onClick={() => setAuthorModalOpen(true)}
+                                            className="text-blue-500 mt-2"
+                                        >
+                                            Add Vendor
+                                        </button>
+                                    </div>
+
+                                    <VendorModal
+                                        isOpen={isVendorModalOpen}
+                                        onClose={() => setVendorModalOpen(false)}
                                         onSubmit={() => { console.log('hi') }}
                                     />
 

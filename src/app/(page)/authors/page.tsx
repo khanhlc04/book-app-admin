@@ -9,23 +9,26 @@ import AuthorModal from '@/app/components/AuthorModal';
 
 export default function AuthorListPage() {
     const [authors, setAuthors] = useState<Author[]>([]);
-    const [isModalOpen, setIsModalOpen] = useState(false);  // Điều khiển trạng thái modal
-    const [selectedAuthor, setSelectedAuthor] = useState<Author | null>(null);  // Lưu tác giả khi chỉnh sửa
+    
+    const [isModalOpen, setIsModalOpen] = useState(false); 
+    
+    const [selectedAuthor, setSelectedAuthor] = useState<Author | null>(null); 
 
-    const fetchData = async () => {
+    const fetchAuthorData = async () => {
         const data = await getAuthors();
         setAuthors(data);
     };
 
     useEffect(() => {
-        fetchData();
+        fetchAuthorData();
     }, []);
 
     const handleEdit = (id: string) => {
         const authorToEdit = authors.find(author => author.id === id);
+
         if (authorToEdit) {
-            setSelectedAuthor(authorToEdit);  // Lưu thông tin tác giả cần chỉnh sửa
-            setIsModalOpen(true);  // Mở modal khi chọn chỉnh sửa
+            setSelectedAuthor(authorToEdit); 
+            setIsModalOpen(true);  
         }
     };
 
@@ -35,13 +38,13 @@ export default function AuthorListPage() {
     };
 
     const handleModalClose = () => {
-        setIsModalOpen(false);  // Đóng modal khi nhấn "Cancel" hoặc hoàn thành hành động
-        setSelectedAuthor(null); // Reset selected author
+        setIsModalOpen(false);  
+        setSelectedAuthor(null); 
     };
 
     const handleModalSubmit = () => {
-        fetchData();
-        setIsModalOpen(false);  // Đóng modal sau khi submit
+        fetchAuthorData();
+        setIsModalOpen(false);  
     };
 
     return (
@@ -49,7 +52,7 @@ export default function AuthorListPage() {
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-2xl font-semibold text-[#00ADEF]">Authors Management</h1>
                 <button 
-                    onClick={() => setIsModalOpen(true)}  // Mở modal để thêm tác giả mới
+                    onClick={() => setIsModalOpen(true)}  
                     className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded flex items-center gap-2"
                 >
                     <Plus size={20} />
@@ -73,6 +76,7 @@ export default function AuthorListPage() {
                                     className="rounded"
                                 />
                             </div>
+
                             <div className="flex gap-2">
                                 <button
                                     onClick={() => handleEdit(author.id)}
@@ -88,6 +92,7 @@ export default function AuthorListPage() {
                                 </button>
                             </div>
                         </div>
+
                         <div className="mt-4">
                             <h2 className="text-lg font-bold">{author.author_name}</h2>
                             <p className="text-sm text-gray-500">{author.description}</p>
@@ -106,12 +111,11 @@ export default function AuthorListPage() {
                 ))}
             </div>
 
-            {/* Modal Add/Edit */}
             <AuthorModal
                 isOpen={isModalOpen}
                 onClose={handleModalClose}
                 onSubmit={handleModalSubmit}
-                initialData={selectedAuthor}  // Truyền dữ liệu tác giả vào modal khi chỉnh sửa
+                initialData={selectedAuthor} 
             />
         </div>
     );

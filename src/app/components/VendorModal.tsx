@@ -1,17 +1,17 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Author } from '../constants/interface';
-import { addAuthor, getBooksByAuthorId, updateAuthor, uploadToCloudinary } from '../service';
+import { Vendor } from '../constants/interface';
+import { addVendor, updateVendor, uploadToCloudinary } from '../service';
 
 type Props = {
     isOpen: boolean;
     onClose: () => void;
     onSubmit: () => void;
-    initialData?: Author | null;
+    initialData?: Vendor | null;
 };
 
-export default function AuthorModal({ isOpen, onClose, onSubmit, initialData }: Props) {
+export default function VendorModal({ isOpen, onClose, onSubmit, initialData }: Props) {
     const {
         register,
         handleSubmit,
@@ -19,20 +19,19 @@ export default function AuthorModal({ isOpen, onClose, onSubmit, initialData }: 
         watch,
         reset,
         formState: { errors },
-    } = useForm<Author>({
+    } = useForm<Vendor>({
         defaultValues: {
             id: '',
-            author_name: '',
+            vendor_name: '',
             image: '',
             type: [],
-            description: '',
         },
     });
 
     const [loading, setLoading] = useState(false);
 
     const [imageFile, setImageFile] = useState<File | null>(null);
-    
+
     const image = watch('image');
 
     const type = watch('type');
@@ -43,10 +42,9 @@ export default function AuthorModal({ isOpen, onClose, onSubmit, initialData }: 
         } else {
             reset({
                 id: '',
-                author_name: '',
+                vendor_name: '',
                 image: '',
                 type: [],
-                description: '',
             });
         }
     }, [initialData, reset]);
@@ -59,7 +57,7 @@ export default function AuthorModal({ isOpen, onClose, onSubmit, initialData }: 
         }
     };
 
-    const onFormSubmit = async (data: Author) => {
+    const onFormSubmit = async (data: Vendor) => {
         setLoading(true);
 
         try {
@@ -74,31 +72,10 @@ export default function AuthorModal({ isOpen, onClose, onSubmit, initialData }: 
                 image: imageUrl,
             };
 
-            const previousAuthorName = initialData?.author_name;
-
             if (data.id) {
-                if (previousAuthorName !== data.author_name) {
-                    const books = await getBooksByAuthorId(data.id);
-
-                    for (const book of books) {
-                        await fetch('/api/sync-elastic', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                operation: 'update',
-                                docId: book.id,
-                                book_name: book.book_name,     
-                                author: data.author_name       
-                            }),
-                        });
-                    }
-                }
-
-                await updateAuthor(data.id, payload);
+                await updateVendor(data.id, payload);
             } else {
-                await addAuthor(payload);
+                await addVendor(payload);
             }
 
             onSubmit();
@@ -147,19 +124,19 @@ export default function AuthorModal({ isOpen, onClose, onSubmit, initialData }: 
                         >
                             <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded bg-white p-6 text-left align-middle shadow-xl transition-all">
                                 <Dialog.Title className="text-lg font-medium">
-                                    {initialData ? 'Edit Author' : 'Add Author'}
+                                    {initialData ? 'Edit Vendor' : 'Add Vendor'}
                                 </Dialog.Title>
 
                                 <form onSubmit={handleSubmit(onFormSubmit)} className="mt-4 space-y-4">
                                     <div>
                                         <input
                                             type="text"
-                                            placeholder="Author Name"
+                                            placeholder="Vendor Name"
                                             className="w-full border rounded p-2"
-                                            {...register('author_name', { required: true })}
+                                            {...register('vendor_name', { required: true })}
                                         />
-                                        {errors.author_name && (
-                                            <p className="text-sm text-red-500 mt-1">Author name is required</p>
+                                        {errors.vendor_name && (
+                                            <p className="text-sm text-red-500 mt-1">Vendor name is required</p>
                                         )}
                                     </div>
 
@@ -191,7 +168,7 @@ export default function AuthorModal({ isOpen, onClose, onSubmit, initialData }: 
                                     <div className="space-y-2">
                                         <label className="block text-sm">Type</label>
                                         <div className="grid grid-cols-2 gap-2">
-                                            {['Writer', 'Novelist', 'Journalist', 'Poet', 'Playwright'].map(option => (
+                                            {['Books', 'Poems', 'Special for you', 'Stationary'].map(option => (
                                                 <label key={option} className="flex items-center space-x-2">
                                                     <input
                                                         type="checkbox"
@@ -206,18 +183,6 @@ export default function AuthorModal({ isOpen, onClose, onSubmit, initialData }: 
                                         </div>
                                         {errors.type && (
                                             <p className="text-sm text-red-500 mt-1">At least one type is required</p>
-                                        )}
-                                    </div>
-
-                                    <div>
-                                        <textarea
-                                            placeholder="Description"
-                                            className="w-full border rounded p-2"
-                                            rows={3}
-                                            {...register('description', { required: true })}
-                                        />
-                                        {errors.description && (
-                                            <p className="text-sm text-red-500 mt-1">Description is required</p>
                                         )}
                                     </div>
 

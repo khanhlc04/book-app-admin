@@ -1,85 +1,8 @@
 import { addDoc, collection, deleteDoc, doc, getCountFromServer, getDocs, increment, orderBy, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../firebaseConfig";
-import { Author, Book } from "../constants/interface";
+import { Author, Book, Vendor } from "../constants/interface";
 
-export const getTotalAuthors = async () => {
-    const snapshot = await getCountFromServer(collection(db, 'author'));
-    return snapshot.data().count;
-};
-
-export const getAuthors = async () => {
-    try {
-        const q = query(
-            collection(db, 'author'),
-            orderBy('created_at', 'asc')
-        );
-
-        const querySnapshot = await getDocs(q);
-        const list: Author[] = querySnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-        })) as Author[];
-        return list;
-    } catch (error) {
-        console.error('Error fetching authors:', error);
-        return [];
-    }
-};
-
-export const addAuthor = async (authorData: Omit<Author, 'id'>) => {
-    try {
-        // Thêm tác giả vào Firestore
-        const newAuthorRef = await addDoc(collection(db, 'author'), {
-            author_name: authorData.author_name,
-            type: authorData.type,
-            image: authorData.image,
-            description: authorData.description,
-            created_at: new Date(),  // Thêm trường created_at để ghi nhận thời gian tạo
-        });
-
-        // Trả về tác giả với ID tự động được tạo từ Firestore
-        return {
-            id: newAuthorRef.id,  // ID tự động được Firebase gán
-            ...authorData,
-        };
-    } catch (error) {
-        console.error('Error adding author:', error);
-        throw new Error('Failed to add author');
-    }
-};
-
-export const updateAuthor = async (id: string, authorData: Omit<Author, 'id'>): Promise<Author> => {
-    try {
-        // Lấy document cụ thể từ Firestore bằng id
-        const authorRef = doc(db, 'author', id);
-
-        // Cập nhật dữ liệu của tác giả
-        await updateDoc(authorRef, {
-            author_name: authorData.author_name,
-            type: authorData.type,
-            image: authorData.image,
-            description: authorData.description,
-        });
-
-        // Trả về dữ liệu đã cập nhật (có thể là dữ liệu cũ hoặc mới tùy yêu cầu của bạn)
-        return { id, ...authorData };
-    } catch (error) {
-        console.error('Error updating author: ', error);
-        throw new Error('Unable to update author');
-    }
-};
-
-export const deleteAuthor = async (id: string) => {
-    try {
-        const authorRef = doc(db, 'author', id);
-        await deleteDoc(authorRef);
-        return id;  // Trả lại id tác giả đã bị xóa
-    } catch (error) {
-        console.error('Error deleting author:', error);
-        throw new Error('Failed to delete author');
-    }
-};
-
+// Books
 export const getBooks = async () => {
     try {
         const q = query(
@@ -101,7 +24,6 @@ export const getBooks = async () => {
 
 export const addBook = async (bookData: Omit<Book, 'id'>) => {
     try {
-        // Thêm sách vào Firestore
         const newBookRef = await addDoc(collection(db, 'book'), {
             book_name: bookData.book_name,
             description: bookData.description,
@@ -111,13 +33,14 @@ export const addBook = async (bookData: Omit<Book, 'id'>) => {
             file_epub: bookData.file_epub,
             type: bookData.type,
             author_id: bookData.author_id,
+            vendor_id: bookData.vendor_id,
             buyed: 0,
-            created_at: new Date(),  // Thêm trường created_at để ghi nhận thời gian tạo
+            created_at: new Date(),  
         });
 
-        // Trả về sách với ID tự động được tạo từ Firestore
+ 
         return {
-            id: newBookRef.id,  // ID tự động được Firebase gán
+            id: newBookRef.id,  
             ...bookData,
         };
     } catch (error) {
@@ -128,10 +51,8 @@ export const addBook = async (bookData: Omit<Book, 'id'>) => {
 
 export const updateBook = async (id: string, bookData: Omit<Book, 'id'>): Promise<Book> => {
     try {
-        // Lấy document cụ thể từ Firestore bằng id
         const bookRef = doc(db, 'book', id);
 
-        // Cập nhật dữ liệu của sách
         await updateDoc(bookRef, {
             book_name: bookData.book_name,
             description: bookData.description,
@@ -141,9 +62,9 @@ export const updateBook = async (id: string, bookData: Omit<Book, 'id'>): Promis
             file_epub: bookData.file_epub,
             type: bookData.type,
             author_id: bookData.author_id,
+            vendor_id: bookData.vendor_id
         });
 
-        // Trả về dữ liệu đã cập nhật
         return { id, ...bookData };
     } catch (error) {
         console.error('Error updating book:', error);
@@ -151,6 +72,133 @@ export const updateBook = async (id: string, bookData: Omit<Book, 'id'>): Promis
     }
 };
 
+export const updateBookBuyed = async (bookId: string) => {
+    try {
+        const bookRef = doc(db, 'book', bookId);
+        await updateDoc(bookRef, {
+            buyed: increment(1),
+        });
+        console.log('Buyed count updated successfully.');
+    } catch (error) {
+        console.error('Error updating buyed count:', error);
+    }
+};
+
+// Authors
+export const getAuthors = async () => {
+    try {
+        const q = query(
+            collection(db, 'author'),
+            orderBy('created_at', 'asc')
+        );
+
+        const querySnapshot = await getDocs(q);
+        const list: Author[] = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+        })) as Author[];
+        return list;
+    } catch (error) {
+        console.error('Error fetching authors:', error);
+        return [];
+    }
+};
+
+export const addAuthor = async (authorData: Omit<Author, 'id'>) => {
+    try {
+        const newAuthorRef = await addDoc(collection(db, 'author'), {
+            author_name: authorData.author_name,
+            type: authorData.type,
+            image: authorData.image,
+            description: authorData.description,
+            created_at: new Date(),  
+        });
+
+        return {
+            id: newAuthorRef.id,  
+            ...authorData,
+        };
+    } catch (error) {
+        console.error('Error adding author:', error);
+        throw new Error('Failed to add author');
+    }
+};
+
+export const updateAuthor = async (id: string, authorData: Omit<Author, 'id'>): Promise<Author> => {
+    try {
+        const authorRef = doc(db, 'author', id);
+
+        await updateDoc(authorRef, {
+            author_name: authorData.author_name,
+            type: authorData.type,
+            image: authorData.image,
+            description: authorData.description,
+        });
+
+        return { id, ...authorData };
+    } catch (error) {
+        console.error('Error updating author: ', error);
+        throw new Error('Unable to update author');
+    }
+};
+
+// Vendor
+export const getVendors = async () => {
+    try {
+        const q = query(
+            collection(db, 'vendor'),
+            orderBy('created_at', 'asc')
+        );
+
+        const querySnapshot = await getDocs(q);
+        const list: Vendor[] = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+        })) as Vendor[];
+        return list;
+    } catch (error) {
+        console.error('Error fetching vendors:', error);
+        return [];
+    }
+};
+
+export const addVendor = async (vendorData: Omit<Vendor, 'id'>) => {
+    try {
+        const newVendorRef = await addDoc(collection(db, 'vendor'), {
+            vendor_name: vendorData.vendor_name,
+            type: vendorData.type,
+            image: vendorData.image,
+            created_at: new Date(),  
+        });
+
+        return {
+            id: newVendorRef.id,  
+            ...vendorData,
+        };
+    } catch (error) {
+        console.error('Error adding author:', error);
+        throw new Error('Failed to add author');
+    }
+};
+
+export const updateVendor = async (id: string, vendorData: Omit<Vendor, 'id'>): Promise<Vendor> => {
+    try {
+        const vendorRef = doc(db, 'vendor', id);
+
+        await updateDoc(vendorRef, {
+            vendor_name: vendorData.vendor_name,
+            type: vendorData.type,
+            image: vendorData.image,
+        });
+
+        return { id, ...vendorData };
+    } catch (error) {
+        console.error('Error updating vendor: ', error);
+        throw new Error('Unable to update vendor');
+    }
+};
+
+// Cloudinary
 export const uploadToCloudinary = async (file: File, fileType: 'image' | 'raw') => {
     const CLOUD_NAME = 'dp6hjihhh';
     const UPLOAD_PRESET = '_BookApp';
@@ -192,15 +240,3 @@ export const getBooksByAuthorId = async (authorId: string) => {
         return [];
     }
 }
-
-export const updateBookBuyed = async (bookId: string) => {
-    try {
-      const bookRef = doc(db, 'book', bookId);
-      await updateDoc(bookRef, {
-        buyed: increment(1),
-      });
-      console.log('Buyed count updated successfully.');
-    } catch (error) {
-      console.error('Error updating buyed count:', error);
-    }
-  };

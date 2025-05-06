@@ -3,89 +3,87 @@
 import { useEffect, useState } from 'react';
 import { Pencil, Trash2, Plus } from 'lucide-react';
 import Image from 'next/image';
-import { Book } from '@/app/constants/interface';
-import { getBooks } from '@/app/service';
-import BookModal from '@/app/components/BookModal';
+import { Vendor } from '@/app/constants/interface';
+import { getVendors } from '@/app/service';
+import VendorModal from '@/app/components/VendorModal';
 
-export default function BookListPage() {
-    const [books, setBooks] = useState<Book[]>([]);
-
-    const [selectedBook, setSelectedBook] = useState<Book | null>(null);
+export default function VendorListPage() {
+    const [vendors, setVendors] = useState<Vendor[]>([]);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const fetchBookData = async () => {
-        const data = await getBooks();
-        setBooks(data);
+    const [selectedVendor, setSelectedVendor] = useState<Vendor | null>(null);
+
+    const fetchData = async () => {
+        const data = await getVendors();
+        setVendors(data);
     };
 
     useEffect(() => {
-        fetchBookData();
+        fetchData();
     }, []);
 
     const handleEdit = (id: string) => {
-        const bookToEdit = books.find(book => book.id === id);
-
-        if (bookToEdit) {
-            setSelectedBook(bookToEdit);
+        const vendorToEdit = vendors.find(vendor => vendor.id === id);
+        if (vendorToEdit) {
+            setSelectedVendor(vendorToEdit);
             setIsModalOpen(true);
         }
     };
 
     const handleDelete = (id: string) => {
-        console.log('Delete book with ID:', id);
-        // TODO: Gọi API xóa và cập nhật lại danh sách
+        console.log('Delete vendor with ID:', id);
+        // TODO: Gọi API xóa và cập nhật state
     };
 
     const handleModalClose = () => {
         setIsModalOpen(false);
-        setSelectedBook(null);
+        setSelectedVendor(null);
     };
 
     const handleModalSubmit = () => {
-        fetchBookData();
+        fetchData();
         setIsModalOpen(false);
     };
 
     return (
         <div className="p-6">
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-semibold text-[#00ADEF]">Books Management</h1>
+                <h1 className="text-2xl font-semibold text-[#00ADEF]">Vendors Management</h1>
                 <button
                     onClick={() => setIsModalOpen(true)}
                     className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded flex items-center gap-2"
                 >
                     <Plus size={20} />
-                    Add Book
+                    Add Vendor
                 </button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {books.map((book) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {vendors.map((vendor) => (
                     <div
-                        key={book.id}
+                        key={vendor.id}
                         className="bg-white p-4 rounded shadow hover:shadow-md transition"
                     >
                         <div className="flex justify-between items-start">
                             <div className="w-16 h-16 relative rounded overflow-hidden">
                                 <Image
-                                    src={book.poster}
-                                    alt={book.book_name}
+                                    src={vendor.image}
+                                    alt={vendor.vendor_name}
                                     layout="fill"
                                     objectFit="cover"
                                     className="rounded"
                                 />
                             </div>
-
                             <div className="flex gap-2">
                                 <button
-                                    onClick={() => handleEdit(book.id)}
+                                    onClick={() => handleEdit(vendor.id)}
                                     className="text-blue-500 hover:text-blue-700"
                                 >
                                     <Pencil size={20} />
                                 </button>
                                 <button
-                                    onClick={() => handleDelete(book.id)}
+                                    onClick={() => handleDelete(vendor.id)}
                                     className="text-red-500 hover:text-red-700"
                                 >
                                     <Trash2 size={20} />
@@ -94,42 +92,14 @@ export default function BookListPage() {
                         </div>
 
                         <div className="mt-4">
-                            <h2 className="text-lg font-bold">{book.book_name}</h2>
-
-                            {book.file_pdf && (
-                                <a
-                                    href={book.file_pdf}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-block text-[red] hover:underline text-sm"
-                                >
-                                    Link PDF
-                                </a>
-                            )}
-
-                            {book.file_epub && (
-                                <a
-                                    href={book.file_epub}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-block text-blue-600 hover:underline text-sm ml-[10px]"
-                                >
-                                    Link Epub
-                                </a>
-                            )}
-
-                            <p className="text-sm text-green-600 font-semibold mt-1">
-                                {book.cost ? `${book.cost} VND` : 'Free'}
-                            </p>
-
-                            <p className="text-sm text-gray-500 mt-1">{book.description}</p>
+                            <h2 className="text-lg font-bold">{vendor.vendor_name}</h2>
                             <div className="flex flex-wrap gap-1 mt-2">
-                                {book.type.map((type, idx) => (
+                                {vendor.type.map((t, idx) => (
                                     <span
                                         key={idx}
                                         className="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded"
                                     >
-                                        {type}
+                                        {t}
                                     </span>
                                 ))}
                             </div>
@@ -138,11 +108,11 @@ export default function BookListPage() {
                 ))}
             </div>
 
-            <BookModal
+            <VendorModal
                 isOpen={isModalOpen}
                 onClose={handleModalClose}
                 onSubmit={handleModalSubmit}
-                initialData={selectedBook}
+                initialData={selectedVendor}
             />
         </div>
     );

@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link"
-// import { useEffect, useState } from "react";
-import { FaPen, FaBook } from "react-icons/fa6";
+import { FaPen, FaBook, FaBuilding } from "react-icons/fa6";
 import MenuItem from "./MenuItem";
 
 const Sider = () => {
@@ -29,6 +28,11 @@ const Sider = () => {
             title: "Quản lý Tác Giả",
             link: "/authors",
         },
+        {
+            icon: <FaBuilding />,
+            title: "Quản lý Nhà Xuất Bản",
+            link: "/vendors",
+        },
     ];
 
     return (
@@ -42,6 +46,7 @@ const Sider = () => {
                             </span>
                         </Link>
                     </div>
+                    
                     <nav className="px-[20px]">
                         <ul className='flex flex-col gap-[30px]'>
                             {menu &&

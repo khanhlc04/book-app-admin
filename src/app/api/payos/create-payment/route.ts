@@ -19,6 +19,7 @@ export async function POST(req: Request) {
         const cancelUrl = "https://payos-backend.vercel.app/cancel";
 
         const rawData = `amount=${amount}&cancelUrl=${cancelUrl}&description=${description}&orderCode=${orderCode}&returnUrl=${returnUrl}`;
+
         const signature = crypto.createHmac("sha256", CHECKSUM_KEY).update(rawData).digest("hex");
 
         const body = {

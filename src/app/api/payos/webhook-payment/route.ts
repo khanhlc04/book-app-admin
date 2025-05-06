@@ -11,8 +11,7 @@ interface paymentInfo {
 
 const db = getFirestore(firebaseAdminApp);
 
-// Gọi PayOS để lấy thông tin giao dịch
-async function getPaymentInfoFromPayOS(transactionId: string) {
+const getPaymentInfoFromPayOS = async (transactionId: string) => {
     const PAYOS_API_KEY = 'bbf12ca0-9ad7-4d6f-90b9-50d4d367bc37';
     const CLIENT_ID = 'b4085e93-8cf6-4e9c-b1d5-d3351a714ddd';
 
@@ -29,7 +28,7 @@ async function getPaymentInfoFromPayOS(transactionId: string) {
     return response.data.data;
 }
 
-async function removeFromCart(userId: string, bookId: string) {
+const removeFromCart = async (userId: string, bookId: string) => {
     try {
         const cartRef = db.collection('cart').doc(userId);
         const cartDoc = await cartRef.get();
@@ -46,8 +45,7 @@ async function removeFromCart(userId: string, bookId: string) {
     }
 }
 
-// Ghi sách vào kho người dùng nếu thanh toán thành công
-async function createUserBookRecord(paymentInfo: paymentInfo) {
+const createUserBookRecord = async(paymentInfo: paymentInfo) => {
     const { userId, bookId } = paymentInfo;
     const userBooksRef = db.collection('user_books').doc(userId);
     const userBookDoc = await userBooksRef.get();
@@ -68,8 +66,7 @@ async function createUserBookRecord(paymentInfo: paymentInfo) {
     await updateBookBuyed(bookId);
 }
 
-// Cập nhật trạng thái giao dịch
-async function updateTransactionStatus(transactionId: string, status: string) {
+const updateTransactionStatus = async(transactionId: string, status: string) => {
     const snapshot = await db
         .collection('transaction')
         .where('orderCode', '==', transactionId)
@@ -90,8 +87,6 @@ async function updateTransactionStatus(transactionId: string, status: string) {
     );
 }
 
-
-// Webhook Handler
 export async function POST(req: Request) {
     try {
         const body = await req.json();
@@ -105,7 +100,7 @@ export async function POST(req: Request) {
         await updateTransactionStatus(transactionId, paymentInfo.status);
         return NextResponse.json({ success: true });
     } catch (error) {
-        console.error('🔥 Lỗi webhook:', error);
+        console.error('Lỗi webhook:', error);
         return NextResponse.json({ error: 'Xử lý webhook thất bại' }, { status: 500 });
     }
 }

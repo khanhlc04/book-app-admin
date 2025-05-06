@@ -8,6 +8,7 @@ export interface Book {
     file_epub: string;
     type: string[];
     author_id: string;
+    vendor_id: string;
 }
 
 export interface Author {
