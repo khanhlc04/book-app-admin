@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc, getCountFromServer, getDocs, increment, orderBy, query, updateDoc, where } from "firebase/firestore";
+import { addDoc, collection, doc, getDocs, increment, orderBy, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { Author, Book, Vendor } from "../constants/interface";
 
