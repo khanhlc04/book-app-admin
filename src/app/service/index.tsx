@@ -7,6 +7,7 @@ export const getBooks = async () => {
     try {
         const q = query(
             collection(db, 'book'),
+            where('deleted', '==', false),
             orderBy('created_at', 'asc')
         );
 
@@ -35,10 +36,10 @@ export const addBook = async (bookData: Omit<Book, 'id'>) => {
             author_id: bookData.author_id,
             vendor_id: bookData.vendor_id,
             buyed: 0,
+            deleted: false,
             created_at: new Date(),  
         });
 
- 
         return {
             id: newBookRef.id,  
             ...bookData,
@@ -84,11 +85,42 @@ export const updateBookBuyed = async (bookId: string) => {
     }
 };
 
+export const getBooksByAuthorId = async (authorId: string) => {
+    try {
+        const booksRef = collection(db, "book");
+        const q = query(booksRef, where("author_id", "==", authorId));
+
+        const querySnapshot = await getDocs(q);
+
+        const books = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }) as Book);
+
+        return books;
+    } catch (error) {
+        console.error("Lỗi khi lấy sách theo author_id:", error);
+        return [];
+    }
+}
+
+export const deleteBook = async (bookId: string) => {
+    try {
+        const bookRef = doc(db, 'book', bookId);
+        await updateDoc(bookRef, {
+            deleted: true
+        });
+    } catch (error) {
+        console.error('Error delete book:', error);
+    }
+}
+
 // Authors
 export const getAuthors = async () => {
     try {
         const q = query(
             collection(db, 'author'),
+            where('deleted', '==', false),
             orderBy('created_at', 'asc')
         );
 
@@ -111,6 +143,7 @@ export const addAuthor = async (authorData: Omit<Author, 'id'>) => {
             type: authorData.type,
             image: authorData.image,
             description: authorData.description,
+            deleted: false,
             created_at: new Date(),  
         });
 
@@ -142,11 +175,23 @@ export const updateAuthor = async (id: string, authorData: Omit<Author, 'id'>): 
     }
 };
 
+export const deleteAuthor = async (authorId: string) => {
+    try {
+        const authorRef = doc(db, 'author', authorId);
+        await updateDoc(authorRef, {
+            deleted: true
+        });
+    } catch (error) {
+        console.error('Error delete author:', error);
+    }
+}
+
 // Vendor
 export const getVendors = async () => {
     try {
         const q = query(
             collection(db, 'vendor'),
+            where('deleted', '==', false),
             orderBy('created_at', 'asc')
         );
 
@@ -168,6 +213,7 @@ export const addVendor = async (vendorData: Omit<Vendor, 'id'>) => {
             vendor_name: vendorData.vendor_name,
             type: vendorData.type,
             image: vendorData.image,
+            deleted: false,
             created_at: new Date(),  
         });
 
@@ -198,6 +244,17 @@ export const updateVendor = async (id: string, vendorData: Omit<Vendor, 'id'>): 
     }
 };
 
+export const deleteVendor = async (vendorId: string) => {
+    try {
+        const vendorRef = doc(db, 'vendor', vendorId);
+        await updateDoc(vendorRef, {
+            deleted: true
+        });
+    } catch (error) {
+        console.error('Error delete vendor:', error);
+    }
+}
+
 // Cloudinary
 export const uploadToCloudinary = async (file: File, fileType: 'image' | 'raw') => {
     const CLOUD_NAME = 'dp6hjihhh';
@@ -221,22 +278,3 @@ export const uploadToCloudinary = async (file: File, fileType: 'image' | 'raw') 
 
     return data.secure_url;
 };
-
-export const getBooksByAuthorId = async (authorId: string) => {
-    try {
-        const booksRef = collection(db, "book");
-        const q = query(booksRef, where("author_id", "==", authorId));
-
-        const querySnapshot = await getDocs(q);
-
-        const books = querySnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-        }) as Book);
-
-        return books;
-    } catch (error) {
-        console.error("Lỗi khi lấy sách theo author_id:", error);
-        return [];
-    }
-}

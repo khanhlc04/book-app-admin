@@ -4,8 +4,9 @@ import { useEffect, useState } from 'react';
 import { Pencil, Trash2, Plus } from 'lucide-react';
 import Image from 'next/image';
 import { Book } from '@/app/constants/interface';
-import { getBooks } from '@/app/service';
+import { deleteBook, getBooks } from '@/app/service';
 import BookModal from '@/app/components/BookModal';
+import Swal from 'sweetalert2';
 
 export default function BookListPage() {
     const [books, setBooks] = useState<Book[]>([]);
@@ -32,9 +33,40 @@ export default function BookListPage() {
         }
     };
 
-    const handleDelete = (id: string) => {
-        console.log('Delete book with ID:', id);
-        // TODO: Gọi API xóa và cập nhật lại danh sách
+
+    const handleDelete = async (id: string): Promise<void> => {
+        try {
+            const result = await Swal.fire({
+                title: 'Are you sure?',
+                text: 'This book will be permanently deleted!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!',
+            });
+
+            if (result.isConfirmed) {
+                await deleteBook(id);
+
+                Swal.fire('Deleted!', 'The book has been deleted.', 'success');
+                
+                fetchBookData();
+                
+                await fetch('/api/sync-elastic', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        operation: 'delete',
+                        docId: id,
+                    }),
+                });
+            }
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     const handleModalClose = () => {

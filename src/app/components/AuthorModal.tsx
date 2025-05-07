@@ -3,6 +3,7 @@ import { Fragment, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Author } from '../constants/interface';
 import { addAuthor, getBooksByAuthorId, updateAuthor, uploadToCloudinary } from '../service';
+import Swal from 'sweetalert2';
 
 type Props = {
     isOpen: boolean;
@@ -97,8 +98,12 @@ export default function AuthorModal({ isOpen, onClose, onSubmit, initialData }: 
                 }
 
                 await updateAuthor(data.id, payload);
+
+                Swal.fire('Updated Successfull!', 'The author has been updated.', 'success');  
             } else {
                 await addAuthor(payload);
+
+                Swal.fire('Added Successfull!', 'The author has been added.', 'success');  
             }
 
             onSubmit();

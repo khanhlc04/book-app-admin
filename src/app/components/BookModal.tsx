@@ -7,6 +7,7 @@ import { Book, Author, Vendor } from '../constants/interface';
 import { addBook, getAuthors, getVendors, updateBook, uploadToCloudinary } from '../service';
 import AuthorModal from './AuthorModal';
 import VendorModal from './VendorModal';
+import Swal from 'sweetalert2';
 
 type Props = {
     isOpen: boolean;
@@ -148,9 +149,11 @@ export default function BookModal({ isOpen, onClose, onSubmit, initialData }: Pr
             };
 
             if (data.id) {
-                await updateBook(data.id, payload);  
+                await updateBook(data.id, payload);
+                Swal.fire('Updated Successfull!', 'The book has been updated.', 'success');  
             } else {
                 await addBook(payload);  
+                Swal.fire('Added Successfull!', 'The book has been added.', 'success');  
             }
 
             const syncRes = await fetch('/api/sync-elastic', {

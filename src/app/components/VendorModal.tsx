@@ -3,6 +3,7 @@ import { Fragment, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Vendor } from '../constants/interface';
 import { addVendor, updateVendor, uploadToCloudinary } from '../service';
+import Swal from 'sweetalert2';
 
 type Props = {
     isOpen: boolean;
@@ -74,8 +75,12 @@ export default function VendorModal({ isOpen, onClose, onSubmit, initialData }: 
 
             if (data.id) {
                 await updateVendor(data.id, payload);
+
+                Swal.fire('Updated Successfull!', 'The author has been updated.', 'success');
             } else {
                 await addVendor(payload);
+
+                Swal.fire('Added Successfull!', 'The author has been added.', 'success');
             }
 
             onSubmit();

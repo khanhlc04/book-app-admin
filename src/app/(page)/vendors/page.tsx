@@ -4,8 +4,9 @@ import { useEffect, useState } from 'react';
 import { Pencil, Trash2, Plus } from 'lucide-react';
 import Image from 'next/image';
 import { Vendor } from '@/app/constants/interface';
-import { getVendors } from '@/app/service';
+import { deleteVendor, getVendors } from '@/app/service';
 import VendorModal from '@/app/components/VendorModal';
+import Swal from 'sweetalert2';
 
 export default function VendorListPage() {
     const [vendors, setVendors] = useState<Vendor[]>([]);
@@ -14,13 +15,13 @@ export default function VendorListPage() {
 
     const [selectedVendor, setSelectedVendor] = useState<Vendor | null>(null);
 
-    const fetchData = async () => {
+    const fetchVendorData = async () => {
         const data = await getVendors();
         setVendors(data);
     };
 
     useEffect(() => {
-        fetchData();
+        fetchVendorData();
     }, []);
 
     const handleEdit = (id: string) => {
@@ -31,9 +32,26 @@ export default function VendorListPage() {
         }
     };
 
-    const handleDelete = (id: string) => {
-        console.log('Delete vendor with ID:', id);
-        // TODO: Gọi API xóa và cập nhật state
+    const handleDelete = async (id: string): Promise<void> => {
+        try {
+            const result = await Swal.fire({
+                title: 'Are you sure?',
+                text: 'This vendor will be permanently deleted!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, delete it!',
+            });
+
+            if (result.isConfirmed) {
+                await deleteVendor(id);
+                Swal.fire('Deleted!', 'The vendor has been deleted.', 'success');
+                fetchVendorData();
+            }
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     const handleModalClose = () => {
@@ -42,7 +60,7 @@ export default function VendorListPage() {
     };
 
     const handleModalSubmit = () => {
-        fetchData();
+        fetchVendorData();
         setIsModalOpen(false);
     };
 

@@ -28,8 +28,8 @@ export async function POST(request: Request) {
         if (body.operation === 'delete' && body.docId) {
             bulkOps.push({ delete: { _index: 'search-b3fu', _id: body.docId } });
         } else if (body.operation === 'update' && body.docId && body.book_name && body.author) {
-            bulkOps.push({ update: { _index: 'search-b3fu', _id: body.docId } });  // Dòng 1: metadata
-            bulkOps.push({ doc: { book_name: body.book_name, author: body.author } });  // Dòng 2: dữ liệu            
+            bulkOps.push({ update: { _index: 'search-b3fu', _id: body.docId } });  
+            bulkOps.push({ doc: { book_name: body.book_name, author: body.author } }); 
         } else {
             const snapshot = await db.collection('book').get();
             for (const doc of snapshot.docs) {
