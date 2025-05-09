@@ -12,9 +12,9 @@ type BulkOperation =
 
 
 const elasticsearch = new Client({
-    node: 'https://book-app-a10cb9.es.us-east-1.aws.elastic.cloud:443',
+    node: 'https://my-elasticsearch-project-cd782a.es.us-east-1.aws.elastic.cloud:443',
     auth: {
-        apiKey: 'cEY4bVRaWUJWTHMzdkpiUTVpLTE6TG5rcEtOYVlDZTEtbHRUeW1TZFVoZw==' 
+        apiKey: 'YklZNHRwWUJnd3VXQjJOMmJTVng6S2dFcDc3VnpfMk9jQ3BBUFNsSWJQUQ==' 
     }
 });
 
