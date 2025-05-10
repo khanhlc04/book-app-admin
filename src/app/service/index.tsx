@@ -1,6 +1,6 @@
-import { addDoc, collection, doc, getDocs, increment, orderBy, query, updateDoc, where } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs, increment, orderBy, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../firebaseConfig";
-import { Author, Book, Vendor } from "../constants/interface";
+import { Author, Book, Transaction, Vendor } from "../constants/interface";
 
 // Books
 export const getBooks = async () => {
@@ -82,6 +82,22 @@ export const updateBookBuyed = async (bookId: string) => {
         console.log('Buyed count updated successfully.');
     } catch (error) {
         console.error('Error updating buyed count:', error);
+    }
+};
+
+export const getBookById = async (id: string) => {
+    try {
+        const docRef = doc(db, 'book', id);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists() && !docSnap.data().deleted) {
+            return docSnap.data() as Book;
+        }
+
+        return null;
+    } catch (error) {
+        console.error('Error fetching book by ID:', error);
+        return null;
     }
 };
 
@@ -254,6 +270,26 @@ export const deleteVendor = async (vendorId: string) => {
         console.error('Error delete vendor:', error);
     }
 }
+
+// Transaction
+export const getTransactions = async () => {
+    try {
+        const q = query(
+            collection(db, 'transaction'),
+            orderBy('createdAt', 'desc')
+        );
+
+        const querySnapshot = await getDocs(q);
+        const list: Transaction[] = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+        })) as Transaction[];
+        return list;
+    } catch (error) {
+        console.error('Error fetching transactions:', error);
+        return [];
+    }
+};
 
 // Cloudinary
 export const uploadToCloudinary = async (file: File, fileType: 'image' | 'raw') => {

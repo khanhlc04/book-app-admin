@@ -7,8 +7,11 @@ import { Book } from '@/app/constants/interface';
 import { deleteBook, getBooks } from '@/app/service';
 import BookModal from '@/app/components/BookModal';
 import Swal from 'sweetalert2';
+import { useRouter } from 'next/navigation';
 
 export default function BookListPage() {
+    const router = useRouter();
+
     const [books, setBooks] = useState<Book[]>([]);
 
     const [selectedBook, setSelectedBook] = useState<Book | null>(null);
@@ -21,6 +24,8 @@ export default function BookListPage() {
     };
 
     useEffect(() => {
+        if (!localStorage.getItem("token")) router.push("/")
+
         fetchBookData();
     }, []);
 
@@ -32,7 +37,6 @@ export default function BookListPage() {
             setIsModalOpen(true);
         }
     };
-
 
     const handleDelete = async (id: string): Promise<void> => {
         try {
@@ -50,9 +54,9 @@ export default function BookListPage() {
                 await deleteBook(id);
 
                 Swal.fire('Deleted!', 'The book has been deleted.', 'success');
-                
+
                 fetchBookData();
-                
+
                 await fetch('/api/sync-elastic', {
                     method: 'POST',
                     headers: {

@@ -186,7 +186,13 @@ export default function BookModal({ isOpen, onClose, onSubmit, initialData }: Pr
 
     return (
         <Transition appear show={isOpen} as={Fragment}>
-            <Dialog as="div" className="relative z-50" onClose={onClose}>
+            <Dialog 
+                as="div" 
+                className="relative z-50" 
+                onClose={() => {setPosterFile(null);
+                    setPdfFile(null); 
+                    onClose();
+                }}>
                 <Transition.Child
                     as={Fragment}
                     enter="ease-out duration-200"

@@ -1,21 +1,21 @@
 "use client";
 
 import Link from "next/link"
-import { FaPen, FaBook, FaBuilding } from "react-icons/fa6";
+import { FaPen, FaBook, FaBuilding, FaRightFromBracket } from "react-icons/fa6";
 import MenuItem from "./MenuItem";
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { FaExchangeAlt } from "react-icons/fa";
 
 const Sider = () => {
-    // const [isLogin, setIsLogin] = useState<boolean>(false);
+    const [isLogin, setIsLogin] = useState(false);
 
-    // useEffect(() => {
-    //         onAuthStateChanged(auth, (user) => {
-    //           if (user) {
-    //     setIsLogin(true);
-    //           } else {
-    //             setIsLogin(false);
-    //           }
-    //         });
-    // }, [])
+    const pathname = usePathname();
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        setIsLogin(!!token);
+    }, [pathname])
 
     const menu = [
         {
@@ -33,6 +33,16 @@ const Sider = () => {
             title: "Quản lý Nhà Xuất Bản",
             link: "/vendors",
         },
+        {
+            icon: <FaExchangeAlt />,
+            title: "Quản lý Giao Dịch",
+            link: "/transactions",
+        },
+        {
+            icon: <FaRightFromBracket />,
+            title: "Đăng Xuất",
+            link: "/logout",
+        }
     ];
 
     return (
@@ -46,15 +56,17 @@ const Sider = () => {
                             </span>
                         </Link>
                     </div>
-                    
-                    <nav className="px-[20px]">
-                        <ul className='flex flex-col gap-[30px]'>
-                            {menu &&
-                                menu.map((item, index) => (
-                                    <MenuItem item={item} key={index} />
-                                ))}
-                        </ul>
-                    </nav>
+
+                    {isLogin &&
+                        <nav className="px-[20px]">
+                            <ul className='flex flex-col gap-[30px]'>
+                                {menu &&
+                                    menu.map((item, index) => (
+                                        <MenuItem item={item} key={index} />
+                                    ))}
+                            </ul>
+                        </nav>
+                    }
                 </div>
             </div>
         </>

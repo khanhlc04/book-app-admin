@@ -7,8 +7,11 @@ import { Vendor } from '@/app/constants/interface';
 import { deleteVendor, getVendors } from '@/app/service';
 import VendorModal from '@/app/components/VendorModal';
 import Swal from 'sweetalert2';
+import { useRouter } from 'next/navigation';
 
 export default function VendorListPage() {
+    const router = useRouter();
+
     const [vendors, setVendors] = useState<Vendor[]>([]);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -21,6 +24,8 @@ export default function VendorListPage() {
     };
 
     useEffect(() => {
+        if (!localStorage.getItem("token")) router.push("/");
+
         fetchVendorData();
     }, []);
 

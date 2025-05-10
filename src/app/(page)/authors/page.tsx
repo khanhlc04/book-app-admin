@@ -7,8 +7,11 @@ import { Author } from '@/app/constants/interface';
 import { deleteAuthor, getAuthors } from '@/app/service';
 import AuthorModal from '@/app/components/AuthorModal';
 import Swal from 'sweetalert2';
+import { useRouter } from 'next/navigation';
 
 export default function AuthorListPage() {
+    const router = useRouter()
+
     const [authors, setAuthors] = useState<Author[]>([]);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -21,6 +24,7 @@ export default function AuthorListPage() {
     };
 
     useEffect(() => {
+        if (!localStorage.getItem("token")) router.push("/")
         fetchAuthorData();
     }, []);
 

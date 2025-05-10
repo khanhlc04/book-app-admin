@@ -25,3 +25,16 @@ export interface Vendor {
     image: string;
     type: string[];
 }
+
+export interface Transaction {
+    id: string;
+    amount: number;
+    bookId: string;
+    checkoutUrl: string;
+    createdAt: string;
+    description: string;
+    orderCode: number
+    status: string;
+    userId: string;
+
+}
