@@ -51,12 +51,6 @@ export default function BookListPage() {
             });
 
             if (result.isConfirmed) {
-                await deleteBook(id);
-
-                Swal.fire('Deleted!', 'The book has been deleted.', 'success');
-
-                fetchBookData();
-
                 await fetch('/api/sync-elastic', {
                     method: 'POST',
                     headers: {
@@ -67,6 +61,12 @@ export default function BookListPage() {
                         docId: id,
                     }),
                 });
+
+                await deleteBook(id);
+
+                Swal.fire('Deleted!', 'The book has been deleted.', 'success');
+
+                fetchBookData();
             }
         } catch (error) {
             console.error(error);

@@ -81,7 +81,6 @@ const updateTransactionStatus = async(transactionId: string, status: string) => 
 
             if (status === 'PAID') {
                 await createUserBookRecord(docData as paymentInfo);
-
             }
         })
     );
