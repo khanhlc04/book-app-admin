@@ -68,7 +68,7 @@ export default function BookListPage() {
             });
 
             if (result.isConfirmed) {
-                await fetch('/api/sync-elastic/book', {
+                await fetch('/api/sync-elastic', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
