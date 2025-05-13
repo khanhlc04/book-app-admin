@@ -82,7 +82,7 @@ export default function AuthorModal({ isOpen, onClose, onSubmit, initialData }: 
                     const books = await getBooksByAuthorId(data.id);
 
                     for (const book of books) {
-                        await fetch('/api/sync-elastic', {
+                        await fetch('/api/sync-elastic/book', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',

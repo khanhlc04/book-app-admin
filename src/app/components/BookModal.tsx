@@ -156,7 +156,7 @@ export default function BookModal({ isOpen, onClose, onSubmit, initialData }: Pr
                 Swal.fire('Added Successfull!', 'The book has been added.', 'success');  
             }
 
-            const syncRes = await fetch('/api/sync-elastic', {
+            const syncRes = await fetch('/api/sync-elastic/book', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

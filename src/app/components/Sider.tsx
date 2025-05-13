@@ -6,6 +6,9 @@ import MenuItem from "./MenuItem";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { FaExchangeAlt } from "react-icons/fa";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "../firebaseConfig";
+import { getRoleById } from "../service";
 
 const Sider = () => {
     const [isLogin, setIsLogin] = useState(false);
@@ -13,9 +16,18 @@ const Sider = () => {
     const pathname = usePathname();
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        setIsLogin(!!token);
-    }, [pathname])
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const role = await getRoleById(user.uid);
+
+                if (role && role.role === "admin") {
+                    setIsLogin(true);
+                }
+            }
+        });
+
+        return () => unsubscribe();
+    }, [pathname]);
 
     const menu = [
         {

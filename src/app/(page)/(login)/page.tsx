@@ -4,26 +4,36 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
+import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/app/firebaseConfig";
+import { getRoleById } from "@/app/service";
 
 interface FormData {
     email: string;
     password: string;
 }
 
-const DEFAULT_EMAIL = "admin@gmail.com";
-const DEFAULT_PASSWORD = "admin123";
-
 export default function LoginPage() {
     const router = useRouter();
-
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (token) router.push("/books");
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const role = await getRoleById(user.uid);
 
-        setIsLoading(false);
-    }, []);
+                if (!role || role.role !== "admin") {
+                    Swal.fire('Oops!', 'Bạn không có quyền truy cập trang web.');
+                } else {
+                    router.push("/books");
+                }
+            } else {
+                setIsLoading(false);
+            }
+        });
+
+        return () => unsubscribe();
+    }, [router]);
 
     const {
         register,
@@ -31,18 +41,27 @@ export default function LoginPage() {
         formState: { errors },
     } = useForm<FormData>();
 
-    const onSubmit: SubmitHandler<FormData> = (data) => {
-        if (data.email === DEFAULT_EMAIL && data.password === DEFAULT_PASSWORD) {
-            localStorage.setItem("token", "demo_token");
-            router.push("/books");
-        } else {
-             Swal.fire('Oops!', 'Check your email and password then try again.', 'error');
+    const onSubmit: SubmitHandler<FormData> = async (data) => {
+        try {
+            await signInWithEmailAndPassword(auth, data.email, data.password);
+
+            const user = auth.currentUser;
+            const uid = user?.uid;
+
+            const role = uid ? await getRoleById(uid) : null;
+
+            if (!role || role.role !== "admin") {
+                Swal.fire('Oops!', 'Bạn không có quyền truy cập trang web.');
+            }
+
+        } catch (error) {
+            Swal.fire('Oops!', 'Email hoặc mật khẩu không đúng.');
         }
     };
 
     return (
-        <div className="flex justify-center items-center">
-            {!isLoading &&
+        <div className="flex justify-center items-center min-h-screen">
+            {!isLoading && (
                 <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
                     <form
                         className="flex flex-col gap-y-6"
@@ -53,10 +72,7 @@ export default function LoginPage() {
                         </h3>
 
                         <div className="flex flex-col gap-y-2">
-                            <label
-                                htmlFor="email"
-                                className="font-semibold text-sm text-gray-600"
-                            >
+                            <label htmlFor="email" className="font-semibold text-sm text-gray-600">
                                 Email
                             </label>
                             <input
@@ -67,16 +83,13 @@ export default function LoginPage() {
                             />
                             {errors.email && (
                                 <span className="text-red-500 text-sm mt-1">
-                                    {errors.email.message as React.ReactNode}
+                                    {errors.email.message}
                                 </span>
                             )}
                         </div>
 
                         <div className="flex flex-col gap-y-2">
-                            <label
-                                htmlFor="password"
-                                className="font-semibold text-sm text-gray-600"
-                            >
+                            <label htmlFor="password" className="font-semibold text-sm text-gray-600">
                                 Mật Khẩu
                             </label>
                             <input
@@ -87,7 +100,7 @@ export default function LoginPage() {
                             />
                             {errors.password && (
                                 <span className="text-red-500 text-sm mt-1">
-                                    {errors.password.message as React.ReactNode}
+                                    {errors.password.message}
                                 </span>
                             )}
                         </div>
@@ -100,7 +113,7 @@ export default function LoginPage() {
                         </button>
                     </form>
                 </div>
-            }
+            )}
         </div>
     );
 }

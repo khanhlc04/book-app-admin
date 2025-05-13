@@ -36,5 +36,8 @@ export interface Transaction {
     orderCode: number
     status: string;
     userId: string;
+}
 
+export interface Role {
+    role: string;
 }

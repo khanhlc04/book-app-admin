@@ -1,6 +1,6 @@
 import { addDoc, collection, doc, getDoc, getDocs, increment, orderBy, query, updateDoc, where } from "firebase/firestore";
 import { db } from "../firebaseConfig";
-import { Author, Book, Transaction, Vendor } from "../constants/interface";
+import { Author, Book, Role, Transaction, Vendor } from "../constants/interface";
 
 // Books
 export const getBooks = async () => {
@@ -270,6 +270,22 @@ export const deleteVendor = async (vendorId: string) => {
         console.error('Error delete vendor:', error);
     }
 }
+
+// Role
+export const getRoleById = async (id: string) => {
+    try {
+        const docRef = doc(db, 'role', id);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists() && !docSnap.data().deleted) {
+            return docSnap.data() as Role; 
+        }
+        return null;
+    } catch (error) {
+        console.error('Error fetching role by ID:', error);
+        return null;
+    }
+};
 
 // Transaction
 export const getTransactions = async () => {
