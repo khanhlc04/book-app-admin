@@ -54,7 +54,7 @@ export default function LoginPage() {
                 Swal.fire('Oops!', 'Bạn không có quyền truy cập trang web.');
             }
 
-        } catch (error) {
+        } catch {
             Swal.fire('Oops!', 'Email hoặc mật khẩu không đúng.');
         }
     };
