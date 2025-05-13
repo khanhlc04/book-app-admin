@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
         }
 
         const result = await client.search({
-            index: 'search-b3fu',
+            index: 'book-app',
             body: {
                 // @ts-expect-error: Bỏ qua lỗi kiểm tra kiểu do client search không nhận đúng kiểu
                 query: {
