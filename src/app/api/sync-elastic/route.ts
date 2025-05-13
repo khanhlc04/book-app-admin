@@ -8,13 +8,13 @@ type BulkOperation =
     | { delete: { _index: string; _id: string } }
     | { update: { _index: string; _id: string } }
     | { doc: { book_name: string; author: string } }
-    | { book_name: string; author: string }; 
+    | { book_name: string; author: string };
 
 
 const elasticsearch = new Client({
-    node: 'https://my-elasticsearch-project-cd782a.es.us-east-1.aws.elastic.cloud:443',
+    node: 'https://fdd6cbf8132442fd8692e814f3084e09.us-central1.gcp.cloud.es.io:443',
     auth: {
-        apiKey: 'YklZNHRwWUJnd3VXQjJOMmJTVng6S2dFcDc3VnpfMk9jQ3BBUFNsSWJQUQ==' 
+        apiKey: "NjgyS3lwWUJhc3BOZ2JGNDE4Z186Q1BJbGNpb2tmQW9sRnRCQWdBajRnUQ=="
     }
 });
 
@@ -22,14 +22,14 @@ const db = getFirestore(firebaseAdminApp);
 
 export async function POST(request: Request) {
     try {
-        const body = await request.json(); 
+        const body = await request.json();
         const bulkOps: BulkOperation[] = [];
 
         if (body.operation === 'delete' && body.docId) {
-            bulkOps.push({ delete: { _index: 'search-b3fu', _id: body.docId } });
+            bulkOps.push({ delete: { _index: 'book-app', _id: body.docId } });
         } else if (body.operation === 'update' && body.docId && body.book_name && body.author) {
-            bulkOps.push({ update: { _index: 'search-b3fu', _id: body.docId } });  
-            bulkOps.push({ doc: { book_name: body.book_name, author: body.author } }); 
+            bulkOps.push({ update: { _index: 'book-app', _id: body.docId } });
+            bulkOps.push({ doc: { book_name: body.book_name, author: body.author } });
         } else {
             const snapshot = await db.collection('book').get();
             for (const doc of snapshot.docs) {
@@ -48,7 +48,7 @@ export async function POST(request: Request) {
                     }
                 }
 
-                bulkOps.push({ index: { _index: 'search-b3fu', _id: doc.id } });
+                bulkOps.push({ index: { _index: 'book-app', _id: doc.id } });
                 bulkOps.push({
                     book_name: data.book_name || '',
                     author: authorName,

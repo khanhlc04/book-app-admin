@@ -85,6 +85,8 @@ export default function VendorModal({ isOpen, onClose, onSubmit, initialData }: 
 
             onSubmit();
 
+            reset();
+
             onClose();
         } catch (error) {
             console.error(error);

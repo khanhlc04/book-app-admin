@@ -2,9 +2,9 @@ import { NextRequest } from 'next/server';
 import { Client } from '@elastic/elasticsearch';
 
 const client = new Client({
-    node: 'https://my-elasticsearch-project-cd782a.es.us-east-1.aws.elastic.cloud:443',
+    node: 'https://fdd6cbf8132442fd8692e814f3084e09.us-central1.gcp.cloud.es.io:443',
     auth: {
-        apiKey: 'YklZNHRwWUJnd3VXQjJOMmJTVng6S2dFcDc3VnpfMk9jQ3BBUFNsSWJQUQ==' 
+        apiKey: "NjgyS3lwWUJhc3BOZ2JGNDE4Z186Q1BJbGNpb2tmQW9sRnRCQWdBajRnUQ=="
     }
 });
 

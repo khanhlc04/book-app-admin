@@ -293,8 +293,8 @@ export const getTransactions = async () => {
 
 // Cloudinary
 export const uploadToCloudinary = async (file: File, fileType: 'image' | 'raw') => {
-    const CLOUD_NAME = 'dp6hjihhh';
-    const UPLOAD_PRESET = '_BookApp';
+    const CLOUD_NAME = 'dkf3nfigf';
+    const UPLOAD_PRESET = 'book-app';
 
     const formData = new FormData();
     formData.append('file', file);

@@ -108,6 +108,8 @@ export default function AuthorModal({ isOpen, onClose, onSubmit, initialData }: 
 
             onSubmit();
 
+            reset();
+
             onClose();
         } catch (error) {
             console.error(error);
